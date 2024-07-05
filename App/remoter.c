@@ -6,10 +6,11 @@
 #define SBUS_END 0X00
 
 remoter_t remoter;
-int ljy2 = 0;
+
+
+
 void sbus_frame_parse(remoter_t *remoter, uint8_t *buf)
 {
-	ljy2++;
     if ((buf[0] != SBUS_HEAD) || (buf[24] != SBUS_END))
         return;
 

@@ -16,33 +16,14 @@
 
 extern uint8_t usart5_buf[USART5_BUFLEN];
 
-
-typedef struct
-{
-	    uint8_t state;
-    uint8_t data[64];
-
-} wifi_rx_t;
-extern wifi_rx_t wifi_rx;
-
-
 typedef struct
 {
     int16_t ch[10];
 } rc_sbus_t;
 extern rc_sbus_t rc_sbus_receive;
 
-//ACTION定位模块数据联合体
-typedef union _imu_data
-{
-    uint8_t data[24];
-    float ActVal[6];
-} imudata_t;
-extern imudata_t imudata;
-
 void uart_receive_handler(UART_HandleTypeDef *huart);
 void uart_receive_init(UART_HandleTypeDef *huart);
 void usart_init(void);
-#define ABS(x) ((x > 0) ? (x) : (-x))
 
 #endif

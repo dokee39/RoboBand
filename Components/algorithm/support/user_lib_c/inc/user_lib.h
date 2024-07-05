@@ -23,6 +23,7 @@ extern "C" {
 #define map(x, in_min, in_max, out_min, out_max) (((x) - (in_min)) * ((out_max) - (out_min)) / ((in_max) - (in_min)) + (out_min));
 
 #define sign(x)             (((x) >= 0) ? 1 : -1)
+#define abs(x) (((x) > 0) ? (x) : (-x))
 #define max(x,y) ({         \
     typeof(x) _x = (x);     \
     typeof(y) _y = (y);     \
