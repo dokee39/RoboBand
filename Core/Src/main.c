@@ -25,6 +25,7 @@
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
+#include "usb_otg.h"
 #include "gpio.h"
 
 /* Private includes ----------------------------------------------------------*/
@@ -68,6 +69,7 @@ void SystemClock_Config(void);
   */
 int main(void)
 {
+
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
@@ -108,11 +110,12 @@ int main(void)
   MX_TIM1_Init();
   MX_TIM2_Init();
   MX_OCTOSPI2_Init();
+  MX_USB_OTG_HS_PCD_Init();
   /* USER CODE BEGIN 2 */
     main_entry();
-  /* Start scheduler */
 
-  /* We should never get here as control is now taken by the scheduler */
+  /* USER CODE END 2 */
+
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)

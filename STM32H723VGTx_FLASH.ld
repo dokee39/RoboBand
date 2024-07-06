@@ -55,8 +55,8 @@ ENTRY(Reset_Handler)
 /* Highest address of the user mode stack */
 _estack = ORIGIN(DTCMRAM) + LENGTH(DTCMRAM);    /* end of RAM */
 /* Generate a link error if heap and stack don't fit into RAM */
-_Min_Heap_Size = 0x200;      /* required amount of heap  */
-_Min_Stack_Size = 0x800; /* required amount of stack */
+_Min_Heap_Size = 0x2000;      /* required amount of heap  */
+_Min_Stack_Size = 0x8000; /* required amount of stack */
 
 /* Specify the memory areas */
 MEMORY
@@ -177,7 +177,16 @@ SECTIONS
     . = ALIGN(8);
   } >DTCMRAM
 
-  
+  .dma_data : 
+  {
+    . = ALIGN(4);
+    _sdma_data = .;        /* create a global symbol at data start */
+    *(.dma_data)           /* .data sections */
+    *(.dma_data*)          /* .data* sections */
+
+    . = ALIGN(4);
+    _edma_data = .;        /* define a global symbol at data end */
+  } >RAM_D1 AT> FLASH
 
   /* Remove information from the standard libraries */
   /DISCARD/ :

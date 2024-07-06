@@ -45,14 +45,14 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 
   uint32_t              uwPrescalerValue;
   uint32_t              pFLatency;
-/*Configure the TIM23 IRQ priority */
+  /*Configure the TIM23 IRQ priority */
   if (TickPriority < (1UL << __NVIC_PRIO_BITS))
-  {
-  HAL_NVIC_SetPriority(TIM23_IRQn, TickPriority ,0U);
+   {
+     HAL_NVIC_SetPriority(TIM23_IRQn, TickPriority ,0);
 
-  /* Enable the TIM23 global Interrupt */
-  HAL_NVIC_EnableIRQ(TIM23_IRQn);
-    uwTickPrio = TickPriority;
+     /* Enable the TIM23 global Interrupt */
+     HAL_NVIC_EnableIRQ(TIM23_IRQn);
+     uwTickPrio = TickPriority;
     }
   else
   {
@@ -61,10 +61,8 @@ HAL_StatusTypeDef HAL_InitTick(uint32_t TickPriority)
 
   /* Enable TIM23 clock */
   __HAL_RCC_TIM23_CLK_ENABLE();
-
   /* Get clock configuration */
   HAL_RCC_GetClockConfig(&clkconfig, &pFLatency);
-
   /* Compute TIM23 clock */
       uwTimclock = 2*HAL_RCC_GetPCLK2Freq();
 

@@ -13,7 +13,7 @@ int8_t BSP_UserKey_Detect(void)
         if (pinSta == GPIO_PIN_RESET)
         {
             keyState = DETECTING;
-            #warning "TODO: 需要解决溢出的情况"
+            // #warning "TODO: 需要解决溢出的情况"
             overTick = nowTick + 100;//0.1s
             
         }

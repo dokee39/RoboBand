@@ -1,51 +1,91 @@
+#include <stdarg.h>
 #include "bsp_usart.h"
-#include "main.h"
-#include "string.h"
+#include "printf.h"
 #include "remoter.h"
+#include "compiler.h"
 
-UART_HandleTypeDef huart5;
+#define huart_debug huart7
+#define huart_sbus  huart5
+
+#define SBUS_HEAD 0X0F
+#define SBUS_END  0X00
+
+#define USART_DEBUG_TX_BUF_LEN 128
+#define USART_SBUS_BUFLEN      25
+#define USART_SBUS_MAX_LEN     USART_SBUS_BUFLEN * 2
+
+typedef struct
+{
+    int16_t ch[10];
+} rc_sbus_t;
+
+extern UART_HandleTypeDef huart_debug;
+UART_HandleTypeDef huart_sbus;
 DMA_HandleTypeDef hdma_uart5_rx;
-
-/******** 串口接收数组定义 ********/
-uint8_t usart5_buf[USART5_BUFLEN];
-
-/******** 数据结构体定义 ********/
+uint8_t usart_sbus_buf[USART_SBUS_BUFLEN] __dma_data;
 rc_sbus_t rc_sbus_receive;
 
-static int uart_receive_dma_no_it(UART_HandleTypeDef *huart, uint8_t *pData, uint32_t Size);
+static void uart_receive_handler(UART_HandleTypeDef *huart);
 static void uart_rx_idle_callback(UART_HandleTypeDef *huart);
-static void usart5_callback_handler(uint8_t *buff);
-static uint16_t dma_current_data_counter(DMA_Stream_TypeDef *dma_stream);
+static int uart_receive_dma_no_it(UART_HandleTypeDef *huart, uint8_t *pData, uint32_t Size);
 
-void usart_init(void)
+/**************** usart debug ****************/
+
+void usart_debug_printf(const char* fmt, ...) {
+    static char tx_buf[USART_DEBUG_TX_BUF_LEN] __dma_data = { 0 };// 必须使用static 
+    char* ptx_buf = &tx_buf[0];
+    static va_list args;
+    static uint16_t len;
+    va_start(args, fmt);
+
+    if (HAL_UART_GetState(&huart_debug) != HAL_UART_STATE_READY) {
+        return;
+    }
+        
+    len = vsnprintf(ptx_buf, USART_DEBUG_TX_BUF_LEN, fmt, args);
+    va_end(args);
+    HAL_UART_Transmit_DMA(&huart_debug, (uint8_t*)tx_buf, len);
+    __HAL_DMA_DISABLE_IT(huart_debug.hdmatx, DMA_IT_HT);
+}
+
+void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart) {
+    if (huart == &huart_debug) {
+        // 要改变 UART 的标志位为 READY (这可能是 HAL 库的 BUG)
+        huart->gState = HAL_UART_STATE_READY;
+    }
+}
+
+/**************** usart sbus ****************/
+
+void usart_sbus_init(void)
 {
     GPIO_InitTypeDef GPIO_InitStruct = {0};
     RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = {0};
 
-    huart5.Instance = UART5;
-    huart5.Init.BaudRate = 100000;
-    huart5.Init.WordLength = UART_WORDLENGTH_9B;
-    huart5.Init.StopBits = UART_STOPBITS_2;
-    huart5.Init.Parity = UART_PARITY_EVEN;
-    huart5.Init.Mode = UART_MODE_TX_RX;
-    huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-    huart5.Init.OverSampling = UART_OVERSAMPLING_16;
-    huart5.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
-    huart5.Init.ClockPrescaler = UART_PRESCALER_DIV1;
-    huart5.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
-    if (HAL_UART_Init(&huart5) != HAL_OK)
+    huart_sbus.Instance = UART5;
+    huart_sbus.Init.BaudRate = 100000;
+    huart_sbus.Init.WordLength = UART_WORDLENGTH_9B;
+    huart_sbus.Init.StopBits = UART_STOPBITS_2;
+    huart_sbus.Init.Parity = UART_PARITY_EVEN;
+    huart_sbus.Init.Mode = UART_MODE_TX_RX;
+    huart_sbus.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+    huart_sbus.Init.OverSampling = UART_OVERSAMPLING_16;
+    huart_sbus.Init.OneBitSampling = UART_ONE_BIT_SAMPLE_DISABLE;
+    huart_sbus.Init.ClockPrescaler = UART_PRESCALER_DIV1;
+    huart_sbus.AdvancedInit.AdvFeatureInit = UART_ADVFEATURE_NO_INIT;
+    if (HAL_UART_Init(&huart_sbus) != HAL_OK)
     {
       Error_Handler();
     }
-    if (HAL_UARTEx_SetTxFifoThreshold(&huart5, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
+    if (HAL_UARTEx_SetTxFifoThreshold(&huart_sbus, UART_TXFIFO_THRESHOLD_1_8) != HAL_OK)
     {
       Error_Handler();
     }
-    if (HAL_UARTEx_SetRxFifoThreshold(&huart5, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
+    if (HAL_UARTEx_SetRxFifoThreshold(&huart_sbus, UART_RXFIFO_THRESHOLD_1_8) != HAL_OK)
     {
       Error_Handler();
     }
-    if (HAL_UARTEx_DisableFifoMode(&huart5) != HAL_OK)
+    if (HAL_UARTEx_DisableFifoMode(&huart_sbus) != HAL_OK)
     {
       Error_Handler();
     }
@@ -82,7 +122,7 @@ void usart_init(void)
 
     /* UART5 DMA Init */
     /* UART5_RX Init */
-    hdma_uart5_rx.Instance = DMA1_Stream0;
+    hdma_uart5_rx.Instance = DMA1_Stream7;
     hdma_uart5_rx.Init.Request = DMA_REQUEST_UART5_RX;
     hdma_uart5_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
     hdma_uart5_rx.Init.PeriphInc = DMA_PINC_DISABLE;
@@ -97,38 +137,31 @@ void usart_init(void)
       Error_Handler();
     }
 
-    __HAL_LINKDMA(&huart5,hdmarx,hdma_uart5_rx);
+    __HAL_LINKDMA(&huart_sbus,hdmarx,hdma_uart5_rx);
+
+    __HAL_RCC_DMA1_CLK_ENABLE();
+
+    /* DMA interrupt init */
+    /* DMA1_Stream0_IRQn interrupt configuration */
+    HAL_NVIC_SetPriority(DMA1_Stream7_IRQn, 5, 0);
+    HAL_NVIC_EnableIRQ(DMA1_Stream7_IRQn);
 
     /* UART5 interrupt Init */
-    HAL_NVIC_SetPriority(UART5_IRQn, 0, 0);
+    HAL_NVIC_SetPriority(UART5_IRQn, 5, 0);
     HAL_NVIC_EnableIRQ(UART5_IRQn);
-
     
-	uart_receive_init(&huart5);
-}
-
-/**
-  * @brief	空闲中断初始化函数
-  * @param	huart:UART句柄指针
-  * @retval	none
-  */
-void uart_receive_init(UART_HandleTypeDef *huart)
-{
-  if (huart == &huart5)
-  {
     /* 清除空闲中断标志位 */
-    __HAL_UART_CLEAR_IDLEFLAG(&huart5);
+    __HAL_UART_CLEAR_IDLEFLAG(&huart_sbus);
     /* 开启串口空闲中断 */
-    __HAL_UART_ENABLE_IT(&huart5, UART_IT_IDLE);
+    __HAL_UART_ENABLE_IT(&huart_sbus, UART_IT_IDLE);
     /* 开启DMA接收 指定接收长度和数据地址 */
-    uart_receive_dma_no_it(&huart5, usart5_buf, USART5_MAX_LEN);
-  }
+    uart_receive_dma_no_it(&huart_sbus, usart_sbus_buf, USART_SBUS_MAX_LEN);
 }
 
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if(huart == &huart5) {
-		uart_receive_handler(&huart5);
+	if(huart == &huart_sbus) {
+		uart_receive_handler(&huart_sbus);
 	}
 }
 
@@ -137,7 +170,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
   * @param	huart: UART句柄指针
   * @retval	在stm32f4xx_it.c中添加
   */
-void uart_receive_handler(UART_HandleTypeDef *huart)
+static void uart_receive_handler(UART_HandleTypeDef *huart)
 {
   /* __HAL_UART_GET_FLAG	检查指定的UART空闲标志位是否触发 */
   /* __HAL_UART_GET_IT_SOURCEG	检查指定的UART空闲中断是否触发 */
@@ -166,37 +199,19 @@ void uart_receive_handler(UART_HandleTypeDef *huart)
   */
 static void uart_rx_idle_callback(UART_HandleTypeDef *huart)
 {
-  if (huart == &huart5)
+  if (huart == &huart_sbus)
   {
     //判断数据是否为期望的长度 如不是则不进入回调函数 直接开启下一次接收
-    if ((USART5_MAX_LEN - dma_current_data_counter(huart->hdmarx->Instance)) == USART5_BUFLEN)
+    if ((USART_SBUS_MAX_LEN - ((DMA_Stream_TypeDef *)huart->hdmarx->Instance)->NDTR) == USART_SBUS_BUFLEN)
     {
-      /* 进入空闲中断回调函数 */
-      usart5_callback_handler(usart5_buf);
+	  sbus_frame_parse(&remoter, usart_sbus_buf);
     }
 
     /* 设置DMA接收数据的长度 */
-    __HAL_DMA_SET_COUNTER(huart->hdmarx, USART5_MAX_LEN);
+    __HAL_DMA_SET_COUNTER(huart->hdmarx, USART_SBUS_MAX_LEN);
   }
 
 }
-
-/******** 串口空闲中断处理函数 ********/
-static void usart5_callback_handler(uint8_t *buff)
-{
-	sbus_frame_parse(&remoter, buff);
-}
-
-/**
-  * @brief      返回当前DMA通道中剩余的数据个数
-  * @param[in]  dma_stream: DMA通道
-  * @retval     DMA通道中剩余的数据个数
-  */
-static uint16_t dma_current_data_counter(DMA_Stream_TypeDef *dma_stream)
-{
-  return ((uint16_t)(dma_stream->NDTR));
-}
-
 
 /**
   * @brief      配置使能DMA接收(而不是中断接收)
@@ -232,6 +247,4 @@ static int uart_receive_dma_no_it(UART_HandleTypeDef *huart, uint8_t *pData, uin
   else
     return HAL_BUSY;
 }
-
-
 

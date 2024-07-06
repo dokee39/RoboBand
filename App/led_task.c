@@ -5,6 +5,11 @@
 #include "led_task.h"
 #include "ws2812.h"
 
+#warning DEBUG
+#include "bsp_usart.h"
+#include "remoter.h"
+extern remoter_t remoter;
+
 #define LED_FLOW_PERIOD pdMS_TO_TICKS(1200)
 #define LED_BRIGHTNESS 16
 
@@ -22,6 +27,8 @@ void led_task(void* argument) {
         b = (sin(((float)time / LED_FLOW_PERIOD + 0.3333f) * 2 * 3.1416f) + 1) * LED_BRIGHTNESS;
         g = (sin(((float)time / LED_FLOW_PERIOD + 0.6667f) * 2 * 3.1416f) + 1) * LED_BRIGHTNESS;
         WS2812_Ctrl(r, b, g);
+#warning DEBUG
+        usart_debug_printf("%d,%d,%d\n", remoter.rc.ch[CH1], remoter.rc.ch[CH2], remoter.rc.ch[CH3]);
 
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(10));
     }

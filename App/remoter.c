@@ -7,7 +7,9 @@
 
 remoter_t remoter;
 
-
+inline static int16_t remoter_2stage_switch_parse(int16_t ch, int16_t mid_val);
+inline static int16_t remoter_3stage_switch_parse(int16_t ch, int16_t mid_val0, int16_t mid_val1);
+inline static float remoter_var_parse(int16_t ch, int16_t mini, int16_t max);
 
 void sbus_frame_parse(remoter_t *remoter, uint8_t *buf)
 {

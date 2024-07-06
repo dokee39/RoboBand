@@ -30,7 +30,7 @@ public:
     ~Lqr() = default;
 
     void calc() {
-#warning "TODO : use delta control"
+// #warning "TODO : use delta control"
         Z = ref - set;
         U = (-K * Z).trans();
         abs_limit<1, du>(U, Umax);
@@ -59,7 +59,7 @@ private:
     Lqr(const Lqr&) = delete; // uncopyable
     Lqr& operator=(const Lqr&) = delete; // uncopyable
 
-#warning "Matrixf cannot be a const"
+// #warning "Matrixf cannot be a const"
     Matrixf<dz, 1> set;
     Matrixf<dz, 1> ref;
     Matrixf<dz, 1> Z;

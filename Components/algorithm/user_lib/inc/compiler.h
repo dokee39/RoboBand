@@ -2,25 +2,16 @@
 
 #include <stdint.h>
 
-// typedef signed char int8_t;
-// typedef signed short int int16_t;
-// typedef signed int int32_t;
-// typedef signed long long int64_t;
-
-/* exact-width unsigned integer types */
-// typedef unsigned char uint8_t;
-// typedef unsigned short int uint16_t;
-// typedef unsigned int uint32_t;
-// typedef unsigned long long uint64_t;
-
-typedef unsigned char bool_t;
-
 #ifndef __aligned
     #define __aligned(x) __attribute__((__aligned__(x)))
 #endif
 
 #ifndef __packed
     #define __packed __attribute__((__packed__))
+#endif
+
+#ifndef __dma_data
+    #define __dma_data __attribute__((section(".dma_data")))
 #endif
 
 #if __has_attribute(__fallthrough__)

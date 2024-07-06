@@ -2,8 +2,10 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "config.hpp"
+#include "remoter.h"
+#include "bsp_usart.h"
 
-// extern RC_ctrl_t rc_ctrl;
+extern remoter_t remoter;
 
 static void robot_update_set_task(void* arg)
 {
@@ -15,6 +17,8 @@ RobotCtrl::RobotCtrl(Chassis::ChassisBase* chassis):
     chassis(chassis),
     chassis_set(chassis->set) {
     TaskHandle_t xCreatedUpdateSetTask = *(new TaskHandle_t);
+
+    usart_sbus_init();
 
     xTaskCreate(
         robot_update_set_task,
@@ -29,18 +33,17 @@ RobotCtrl::RobotCtrl(Chassis::ChassisBase* chassis):
 [[noreturn]] void RobotCtrl::update_set_task(void* arg) {
     TickType_t xLastWakeTime;
 
-    // remote_control_init();
     vTaskDelay(pdMS_TO_TICKS(Config::Time::UPDATE_SET_INIT));
 
     xLastWakeTime = xTaskGetTickCount();
 
     while (true) {
-        // float vx_set = rc_ctrl.rc.ch[1] * Config::RC::VX_SET_RATIO;
-        // float vy_set = -rc_ctrl.rc.ch[0] * Config::RC::VY_SET_RATIO;
-        // float wz_set = -rc_ctrl.rc.ch[2] * Config::RC::WZ_SET_RATIO;
-        // chassis->set.vx = vx_set;
-        // chassis->set.vy = vy_set;
-        // chassis->set.wz = wz_set;
+        float vx_set = remoter.rc.ch[1] * Config::RC::VX_SET_RATIO;
+        float vy_set = -remoter.rc.ch[0] * Config::RC::VY_SET_RATIO;
+        float wz_set = -remoter.rc.ch[2] * Config::RC::WZ_SET_RATIO;
+        chassis->set.vx = vx_set;
+        chassis->set.vy = vy_set;
+        chassis->set.wz = wz_set;
 
         vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(Config::Time::UPDATE_SET_CYCLE));
     }

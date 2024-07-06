@@ -85,7 +85,7 @@ void Chassis<Here>::ctrl_val_calc_<CTRL_LQR>() {
     
     motors[0]->ctrl_val = lqr.get_u(0);
     motors[1]->ctrl_val = lqr.get_u(1);
-#warning "TODO : add scale?"
+// #warning "TODO : add scale?"
 }
 
 template<>

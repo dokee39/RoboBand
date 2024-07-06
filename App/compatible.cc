@@ -6,6 +6,9 @@
 #include "double_wheel_balance_chassis.hpp"
 #include "robot_ctrl.hpp"
 
+#warning DEBUG
+#include "bsp_usart.h"
+
 void main_entry(void) {
     TaskHandle_t xCreatedLedTask;
 
@@ -18,6 +21,7 @@ void main_entry(void) {
         &xCreatedLedTask
     );
 
+    usart_sbus_init();
     // auto chassis = new Chassis::Chassis(Config::Chassis::DoubleWheelBalance);
     // auto robot = new Robot::RobotCtrl(chassis);
     // UNUSED(robot);
