@@ -1,0 +1,44 @@
+[
+ {
+  "directory": "/home/dokee/Documents/robomaster/projects/RoboBand",
+  "arguments": [
+   "g++",
+   "-c",
+   "-Isrc",
+   "-Isrc/robot",
+   "-Isrc/robot/inc",
+   "-Isrc/motor",
+   "-Isrc/motor/inc",
+   "-I/usr/local/webots/include/controller/cpp",
+   "-std=c++17",
+   "-og",
+   "-g",
+   "-Wall",
+   "src/robot/robot.cc",
+   "-o",
+   "build/src/robot/robot.cc.o"
+  ],
+  "file": "src/robot/robot.cc"
+ },
+ {
+  "directory": "/home/dokee/Documents/robomaster/projects/RoboBand",
+  "arguments": [
+   "g++",
+   "-c",
+   "-Isrc",
+   "-Isrc/robot",
+   "-Isrc/robot/inc",
+   "-Isrc/motor",
+   "-Isrc/motor/inc",
+   "-I/usr/local/webots/include/controller/cpp",
+   "-std=c++17",
+   "-og",
+   "-g",
+   "-Wall",
+   "src/main.cc",
+   "-o",
+   "build/src/main.cc.o"
+  ],
+  "file": "src/main.cc"
+ }
+]
