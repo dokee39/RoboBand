@@ -2,19 +2,21 @@
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
 
+#include "io/webots/inc/webots.hpp"
 #include "webots_motor.hpp"
 
 int main(int argc, char **argv) {
-    auto *robot = new webots::Robot();
+    auto robot = new webots::Robot;
     int timeStep = (int)robot->getBasicTimeStep();
+    auto motor = robot->getMotor("joint_motor_1"); 
 
-    auto wm = robot->getMotor("joint_motor_1"); 
+    auto webots_io = new robo::io::Webots(*robot);
 
-    auto m = new robo::motor::Motor("1"); 
-    auto mywm = new robo::motor::WebotsMotor(wm, timeStep);
-    m->bind(mywm->binder);
+    auto vmotor = new robo::motor::Motor("1"); 
+    auto wmotor = new robo::motor::WebotsMotor(*webots_io, *motor, timeStep);
+    vmotor->bind(wmotor->binder);
     
     while (robot->step(timeStep) != -1) {
-        m->setTorque(20.0f);
+        wmotor->setTorque(20.0f);
     }
 }

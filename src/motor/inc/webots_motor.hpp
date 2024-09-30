@@ -4,18 +4,20 @@
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
 
+#include "io/webots/inc/webots.hpp"
 #include "motor.hpp"
 
 namespace robo {
 namespace motor {
 class WebotsMotor {
 public:
-    explicit WebotsMotor(webots::Motor *const motor, const int time_step): 
+    explicit WebotsMotor(robo::io::Webots &webots, webots::Motor&motor, const int time_step): 
+        webots(webots),
         motor(motor),
-        encoder(motor->getPositionSensor()) {
-        encoder->enable(time_step);
+        encoder(*motor.getPositionSensor()) {
+        encoder.enable(time_step);
     }
-    ~WebotsMotor();
+    ~WebotsMotor() = default;
 
     Binder binder {
         .setTorque = [this](float torque) { this->setTorque(torque); },
@@ -24,13 +26,15 @@ public:
     };
 
     void Update(const int time_step) {
+        int time;
+        webots.EncoderGetValue(encoder, angle, time);
+        speed = (angle - angle_last) / (time - time_last);
+        time_last = time;
         angle_last = angle;
-        angle = encoder->getValue();
-        speed = (angle - angle_last) / time_step;
     }
 
     void setTorque(float torque) {
-        motor->setTorque(torque);
+        webots.MotorSetTorque(motor, torque);
     }
     void setAngelOffset(float angle_offset_) {
         angle_offset = angle_offset_;
@@ -43,13 +47,16 @@ public:
     }
 
 private:
-    webots::Motor *const motor;
-    webots::PositionSensor *const encoder;
+    robo::io::Webots &webots;
+    webots::Motor &motor;
+    webots::PositionSensor &encoder;
 
     float speed {0.0f};
     float angle {0.0f};
     float angle_last {0.0f};
     float angle_offset {0.0f};
+    int time_last {0};
+
 };
 }
 }

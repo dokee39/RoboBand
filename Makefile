@@ -26,7 +26,10 @@ src
 LDFLAGS := \
 -lm \
 -ldl \
--lrt
+-lrt \
+-lpthread \
+-lboost_system \
+-lboost_thread
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.cc' -or -name '*.cpp')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)

@@ -3,7 +3,7 @@
 namespace robo {
 class Robot {
     explicit Robot();
-    ~Robot();
+    ~Robot() = default;
 
     
 };
