@@ -27,7 +27,7 @@ public:
 
     void bind(robo::io::Webots &webots_io_) {
         webots_io = &webots_io_;
-        webots_io->bind_num ++;
+        webots_io->bind_tasks_num ++;
     }
 
     void run(int cycle_ms) {
@@ -37,18 +37,19 @@ public:
         }
 
         running = true;
-        if (thread == nullptr) {
+        if (thread != nullptr) {
             std::cerr << "[ERROR] task <" + name + ">: Repeated run a Runner!" << std::endl;
         } else {
             thread = new std::thread([this, cycle_ms]() {
                 int time_step_set = webots_io->time_step;
                 while (running) {
-                    while (webots_io->task_wait_cnt != 0);
                     time_step_set += cycle_ms;
+                    if (webots_io != nullptr) {
+                        webots_io->sync_point->arrive_and_wait();
+                    }
                     if (time_step_set > webots_io->time_step) {
                         task();
                     }
-                    webots_io->task_wait_cnt --;
                 }
             });
         }
@@ -58,6 +59,8 @@ public:
         running = false;
         if (thread != nullptr) {
             thread->join();
+            delete thread;
+            webots_io->bind_tasks_num --;
             std::cout << "[INFO] task <" + name + ">: Stopped!" << std::endl;
         }
     }
@@ -100,6 +103,7 @@ public:
         running = false;
         if (thread != nullptr) {
             thread->join();
+            delete thread;
             std::cout << "[INFO] task <" + name + ">: Stopped!" << std::endl;
         }
     }

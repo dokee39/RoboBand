@@ -18,7 +18,7 @@ DEBUG := 1
 USE_WEBOTS := 1
 
 CC := g++
-OPT := -std=c++17 -og -g
+OPT := -std=c++20 -og -g
 DEF := \
 
 BUILD_DIR := ./build

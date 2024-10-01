@@ -1,7 +1,7 @@
 #pragma once
 
-#include <mutex>
 #include <atomic>
+#include <barrier>
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
@@ -18,31 +18,33 @@ public:
 
     webots::Robot robot;
     std::atomic<int> time_step;
-    std::atomic<int> bind_num {0};
-    std::atomic<int> task_wait_cnt {0};
+    std::atomic<int> bind_tasks_num {0};
+    std::barrier<> *sync_point;
 
     int Step() {
-        std::lock_guard<std::mutex> lock(mtx);
-        while (task_wait_cnt != 0);
-        task_wait_cnt = bind_num.load();
+        if (sync_point == nullptr) {
+            sync_point = new std::barrier<>(bind_tasks_num + 1);
+        }
         time_step = robot.step(basic_time_step);
+        if (time_step == -1) {
+            delete sync_point;
+        } else {
+            sync_point->arrive_and_wait();
+        }
         return time_step;
     }
 
     void MotorSetTorque(webots::Motor &motor, const float torque) {
-        std::lock_guard<std::mutex> lock(mtx);
         motor.setTorque(torque);
     }
 
     void EncoderGetValue(webots::PositionSensor &encoder, float &value, int &time) {
-        std::lock_guard<std::mutex> lock(mtx);
         value = encoder.getValue();
         time = robot.step(0);
     };
 
 private:
     int basic_time_step;
-    std::mutex mtx;
 
 };
 }

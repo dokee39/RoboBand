@@ -7,6 +7,7 @@
 
 #include "io/webots/inc/webots.hpp"
 #include "webots_motor.hpp"
+#include "ctrl/chassis/inc/balance.hpp"
 
 std::atomic<bool> running {true};
 
@@ -22,13 +23,18 @@ int main(int argc, char **argv) {
 
     auto motor = webots_io->robot.getMotor("joint_motor_1"); 
 
-    auto vmotor = new robo::motor::Motor("1"); 
+    auto chassis = new robo::ctrl::Balance();
+
     auto wmotor = new robo::motor::WebotsMotor(*webots_io, *motor);
-    vmotor->bind(wmotor->binder);
-    
+    chassis->joint_motor[0].bind(wmotor->binder);
+
+    chassis->runner.bind(*webots_io);
+    chassis->runner.run(1);
+
     while (running && webots_io->Step() != -1) {
-        wmotor->setTorque(20.0f);
     }
+
+    chassis->runner.stop();
 
     std::cout << "Main thread exiting..." << std::endl;
 }

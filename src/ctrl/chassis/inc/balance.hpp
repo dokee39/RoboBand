@@ -1,17 +1,24 @@
 #pragma once
 
 #include <eigen3/Eigen/Eigen>
+
 #include "motor/inc/motor.hpp"
+#include "runner/inc/runner.hpp"
 
 namespace robo {
 namespace ctrl {
 class Balance {
 public:
-    explicit Balance();
+    explicit Balance():
+        runner("balance chassis", [this]() { ctrl_loop(); }) {
+    }
     ~Balance() = default;
 
+    robo::run::Runner runner;
     robo::motor::Motor joint_motor[2];
     robo::motor::Motor wheel_motor[2];
+
+    void ctrl_loop();
 
 private:
     Eigen::Vector<float, 8> state_ref;
