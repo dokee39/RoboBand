@@ -15,6 +15,7 @@ END := \033[0m
 TARGET := $(shell basename "$$PWD")
 
 DEBUG := 1
+USE_WEBOTS := 1
 
 CC := g++
 OPT := -std=c++17 -og -g
@@ -27,19 +28,21 @@ LDFLAGS := \
 -lm \
 -ldl \
 -lrt \
--lpthread \
--lboost_system \
--lboost_thread
+-lpthread
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.cc' -or -name '*.cpp')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 INC_DIRS := $(shell find $(SRC_DIRS) -type d)
-
-INC_DIRS += $(WEBOTS_HOME)/include/controller/cpp
-LDFLAGS += -L$(WEBOTS_HOME)/lib/controller -lCppController
-
+ifeq ($(USE_WEBOTS), 1)
+	DEF += USE_WEBOTS
+	INC_DIRS += $(WEBOTS_HOME)/include/controller/cpp
+	LDFLAGS += -L$(WEBOTS_HOME)/lib/controller -lCppController
+endif
 CPPFLAGS := $(addprefix -D, $(DEF)) $(addprefix -I, $(INC_DIRS)) $(OPT) -Wall
+ifeq ($(DEBUG), 1)
+	CPPFLAGS += -g -gdwarf-2
+endif
 
 .PHONY: all run clean
 

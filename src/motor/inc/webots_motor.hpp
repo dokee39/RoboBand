@@ -5,17 +5,17 @@
 #include <webots/PositionSensor.hpp>
 
 #include "io/webots/inc/webots.hpp"
-#include "motor.hpp"
+#include "motor/inc/motor.hpp"
 
 namespace robo {
 namespace motor {
 class WebotsMotor {
 public:
-    explicit WebotsMotor(robo::io::Webots &webots, webots::Motor&motor, const int time_step): 
-        webots(webots),
+    explicit WebotsMotor(robo::io::Webots &webots_io, webots::Motor&motor): 
+        webots_io(webots_io),
         motor(motor),
         encoder(*motor.getPositionSensor()) {
-        encoder.enable(time_step);
+        encoder.enable(webots_io.robot.getBasicTimeStep());
     }
     ~WebotsMotor() = default;
 
@@ -27,14 +27,14 @@ public:
 
     void Update(const int time_step) {
         int time;
-        webots.EncoderGetValue(encoder, angle, time);
+        webots_io.EncoderGetValue(encoder, angle, time);
         speed = (angle - angle_last) / (time - time_last);
         time_last = time;
         angle_last = angle;
     }
 
     void setTorque(float torque) {
-        webots.MotorSetTorque(motor, torque);
+        webots_io.MotorSetTorque(motor, torque);
     }
     void setAngelOffset(float angle_offset_) {
         angle_offset = angle_offset_;
@@ -47,7 +47,7 @@ public:
     }
 
 private:
-    robo::io::Webots &webots;
+    robo::io::Webots &webots_io;
     webots::Motor &motor;
     webots::PositionSensor &encoder;
 

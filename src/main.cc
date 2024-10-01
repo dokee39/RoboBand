@@ -1,3 +1,6 @@
+#include <csignal>
+#include <iostream>
+#include <atomic>
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
@@ -5,18 +8,27 @@
 #include "io/webots/inc/webots.hpp"
 #include "webots_motor.hpp"
 
-int main(int argc, char **argv) {
-    auto robot = new webots::Robot;
-    int timeStep = (int)robot->getBasicTimeStep();
-    auto motor = robot->getMotor("joint_motor_1"); 
+std::atomic<bool> running {true};
 
-    auto webots_io = new robo::io::Webots(*robot);
+void Interrupt(int signum) {
+    std::cout << "Interrupt signal (" << signum << ") received!" << std::endl;
+    running = false;
+}
+
+int main(int argc, char **argv) {
+    std::signal(SIGINT, Interrupt);
+
+    auto webots_io = new robo::io::Webots();
+
+    auto motor = webots_io->robot.getMotor("joint_motor_1"); 
 
     auto vmotor = new robo::motor::Motor("1"); 
-    auto wmotor = new robo::motor::WebotsMotor(*webots_io, *motor, timeStep);
+    auto wmotor = new robo::motor::WebotsMotor(*webots_io, *motor);
     vmotor->bind(wmotor->binder);
     
-    while (robot->step(timeStep) != -1) {
+    while (running && webots_io->Step() != -1) {
         wmotor->setTorque(20.0f);
     }
+
+    std::cout << "Main thread exiting..." << std::endl;
 }
