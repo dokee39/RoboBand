@@ -14,7 +14,9 @@ public:
         time_step(robot.step(0)),
         basic_time_step((int)robot.getBasicTimeStep()){
     }
-    ~Webots() = default;
+    ~Webots() {
+        delete sync_point;
+    }
 
     webots::Robot robot;
     std::atomic<int> time_step;

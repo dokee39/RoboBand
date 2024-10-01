@@ -20,10 +20,9 @@ public:
         name(name),
         task(task) {
     }
-    explicit Runner(std::function<void ()> task):
-        task(task) {
+    ~Runner() {
+        delete thread;
     }
-    ~Runner() = default;
 
     void bind(robo::io::Webots &webots_io_) {
         webots_io = &webots_io_;
@@ -45,7 +44,8 @@ public:
                 while (running) {
                     time_step_set += cycle_ms;
                     if (webots_io != nullptr) {
-                        webots_io->sync_point->arrive_and_wait();
+                        if (webots_io->sync_point != nullptr) 
+                            webots_io->sync_point->arrive_and_wait();
                     }
                     if (time_step_set > webots_io->time_step) {
                         task();
@@ -66,7 +66,7 @@ public:
     }
 
 private:
-    std::string name {"default name"};
+    std::string name;
     std::atomic<bool> running {false};
     std::function<void ()> task;
     std::thread *thread {nullptr};
@@ -84,7 +84,9 @@ public:
     explicit Runner(std::function<void ()> task):
         task(task) {
     }
-    ~Runner() = default;
+    ~Runner() {
+        delete thread;
+    }
 
     void run() {
         running = true;

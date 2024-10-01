@@ -5,10 +5,10 @@
 #include <webots/PositionSensor.hpp>
 
 #include "io/webots/inc/webots.hpp"
-#include "motor/inc/motor.hpp"
+#include "virtual/inc/motor.hpp"
 
 namespace robo {
-namespace motor {
+namespace dev {
 class WebotsMotor {
 public:
     explicit WebotsMotor(robo::io::Webots &webots_io, webots::Motor&motor): 
@@ -19,7 +19,7 @@ public:
     }
     ~WebotsMotor() = default;
 
-    Binder binder {
+    robo::vir::Binder binder {
         .setTorque = [this](float torque) { this->setTorque(torque); },
         .angle= &this->angle,
         .speed = &this->speed,

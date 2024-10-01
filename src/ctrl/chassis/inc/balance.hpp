@@ -2,7 +2,7 @@
 
 #include <eigen3/Eigen/Eigen>
 
-#include "motor/inc/motor.hpp"
+#include "virtual/inc/motor.hpp"
 #include "runner/inc/runner.hpp"
 
 namespace robo {
@@ -15,8 +15,8 @@ public:
     ~Balance() = default;
 
     robo::run::Runner runner;
-    robo::motor::Motor joint_motor[2];
-    robo::motor::Motor wheel_motor[2];
+    robo::vir::Motor joint_motor[2];
+    robo::vir::Motor wheel_motor[2];
 
     void ctrl_loop();
 

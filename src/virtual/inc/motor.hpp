@@ -6,7 +6,7 @@
 #include <string>
 
 namespace robo {
-namespace motor {
+namespace vir {
 struct Binder {
     std::function<void (float)> setTorque;
     float *angle;
