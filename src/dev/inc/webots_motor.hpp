@@ -11,12 +11,7 @@ namespace robo {
 namespace dev {
 class WebotsMotor {
 public:
-    explicit WebotsMotor(robo::io::Webots &webots_io, webots::Motor&motor): 
-        webots_io(webots_io),
-        motor(motor),
-        encoder(*motor.getPositionSensor()) {
-        encoder.enable(webots_io.robot.getBasicTimeStep());
-    }
+    explicit WebotsMotor(robo::io::Webots &webots_io, webots::Motor&motor);
     ~WebotsMotor() = default;
 
     robo::vir::Binder binder {
@@ -25,16 +20,9 @@ public:
         .speed = &this->speed,
     };
 
-    void Update(const int time_step) {
-        int time;
-        webots_io.EncoderGetValue(encoder, angle, time);
-        speed = (angle - angle_last) / (time - time_last);
-        time_last = time;
-        angle_last = angle;
-    }
-
+    void update(const int time_step);
     void setTorque(float torque) {
-        webots_io.MotorSetTorque(motor, torque);
+        webots_io.motorSetTorque(motor, torque);
     }
     void setAngelOffset(float angle_offset_) {
         angle_offset = angle_offset_;

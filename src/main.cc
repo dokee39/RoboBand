@@ -22,7 +22,7 @@ int main(int argc, char **argv) {
 #ifndef USE_WEBOTS
     signal(SIGINT, SigintHandler);
 #endif
-    while (running && webots_io->Step() != -1);
+    while (running && webots_io->step() != -1);
 
     chassis->runner.stop();
     std::cout << "[INFO] Main thread exiting..." << std::endl;

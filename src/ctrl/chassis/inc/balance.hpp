@@ -9,16 +9,14 @@ namespace robo {
 namespace ctrl {
 class Balance {
 public:
-    explicit Balance():
-        runner("balance chassis", [this]() { ctrl_loop(); }) {
-    }
+    explicit Balance();
     ~Balance() = default;
 
     robo::run::Runner runner;
     robo::vir::Motor joint_motor[2];
     robo::vir::Motor wheel_motor[2];
 
-    void ctrl_loop();
+    void ctrlLoop();
 
 private:
     Eigen::Vector<float, 8> state_ref;

@@ -2,7 +2,10 @@
 
 namespace robo {
 namespace ctrl {
-void Balance::ctrl_loop() {
+Balance::Balance():
+    runner("balance chassis", [this]() { ctrlLoop(); }) {
+}
+void Balance::ctrlLoop() {
     joint_motor[0].setTorque(10);
 }
 }
