@@ -2,7 +2,8 @@
 
 #include <eigen3/Eigen/Eigen>
 
-#include "virtual/inc/motor.hpp"
+#include "virtual/motor.hpp"
+#include "virtual/imu.hpp"
 #include "runner/inc/runner.hpp"
 
 namespace robo {
@@ -13,6 +14,7 @@ public:
     ~Balance() = default;
 
     robo::run::Runner runner;
+    robo::vir::Imu imu;
     robo::vir::Motor joint_motor[2];
     robo::vir::Motor wheel_motor[2];
 

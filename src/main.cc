@@ -12,9 +12,8 @@ void SigintHandler(int signum) {
 
 int main(int argc, char **argv) {
     auto webots_io = new robo::io::Webots();
-    auto motor = webots_io->robot.getMotor("joint_motor_1"); 
     auto chassis = new robo::ctrl::Balance();
-    auto wmotor = new robo::dev::WebotsMotor(*webots_io, *motor);
+    auto wmotor = new robo::dev::WebotsMotor(*webots_io, "joint_motor_1");
     chassis->joint_motor[0].bind(wmotor->binder);
     chassis->runner.bind(*webots_io);
     chassis->runner.run(1);
