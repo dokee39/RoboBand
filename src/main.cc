@@ -1,7 +1,7 @@
 #include <csignal>
 
 #include "dev/inc/webots_motor.hpp"
-#include "ctrl/chassis/inc/balance.hpp"
+#include "ctrl/chassis/inc/lqr_sim.hpp"
 
 std::atomic<bool> running {true};
 
@@ -12,11 +12,11 @@ void SigintHandler(int signum) {
 
 int main(int argc, char **argv) {
     auto webots_io = new robo::io::Webots();
-    auto chassis = new robo::ctrl::Balance();
+    auto chassis = new robo::ctrl::LqrSim();
     auto wmotor = new robo::dev::WebotsMotor(*webots_io, "joint_motor_1");
     chassis->joint_motor[0].bind(wmotor->binder);
     chassis->runner.bind(*webots_io);
-    chassis->runner.run(1);
+    chassis->runner.run();
 
 #ifndef USE_WEBOTS
     signal(SIGINT, SigintHandler);

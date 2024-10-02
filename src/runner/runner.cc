@@ -5,17 +5,17 @@
 namespace robo {
 namespace run {
 #ifdef USE_WEBOTS
-void Runner::run(int cycle_ms) {
+void Runner::run() {
     if (webots_io == nullptr) {
-        std::cerr << "[ERROR] task <" + name + ">: You haven't bound robo::io::webots before running!" << std::endl;
+        std::cerr << "[ERROR] [Runner<" + name + ">] You haven't bound robo::io::webots before running!" << std::endl;
         return;
     }
 
     running = true;
     if (thread != nullptr) {
-        std::cerr << "[ERROR] task <" + name + ">: Repeated run a Runner!" << std::endl;
+        std::cerr << "[ERROR] [Runner<" + name + ">] Repeated run a Runner!" << std::endl;
     } else {
-        thread = new std::thread([this, cycle_ms]() {
+        thread = new std::thread([this]() {
             int time_step_set = webots_io->time_step;
             while (running) {
                 time_step_set += cycle_ms;
@@ -37,7 +37,7 @@ void Runner::stop() {
         thread->join();
         delete thread;
         webots_io->bind_tasks_num --;
-        std::cout << "[INFO] task <" + name + ">: Stopped!" << std::endl;
+        std::clog << "[INFO] [Runner<" + name + ">] Stopped!" << std::endl;
     }
 }
 
@@ -50,7 +50,7 @@ void Runner::bind(robo::io::Webots &webots_io_) {
 void Runner::run() {
     running = true;
     if (thread == nullptr) {
-        std::cerr << "[ERROR] task <" + name + ">: Repeated run a Runner!" << std::endl;
+        std::cerr << "[ERROR] [Runner<" + name + ">] Repeated run a Runner!" << std::endl;
     } else {
         thread = new std::thread([this]() {
             while (running) {
@@ -65,7 +65,7 @@ void Runner::stop() {
     if (thread != nullptr) {
         thread->join();
         delete thread;
-        std::cout << "[INFO] task <" + name + ">: Stopped!" << std::endl;
+        std::clog << "[INFO] [Runner<" + name + ">] Stopped!" << std::endl;
     }
 }
 

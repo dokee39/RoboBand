@@ -13,7 +13,7 @@ namespace robo {
 namespace run {
 class Runner {
 public:
-    explicit Runner(std::string name, std::function<void ()> task):
+    explicit Runner(std::string name, std::function<void ()> task, int cycle_ms):
         name(name),
         task(task) {
     }
@@ -21,7 +21,7 @@ public:
         delete thread;
     }
 
-    void run(int cycle_ms);
+    void run();
     void stop();
 #ifdef USE_WEBOTS
     void bind(robo::io::Webots &webots_io_);
@@ -29,6 +29,7 @@ public:
 
 private:
     std::string name;
+    int cycle_ms;
     std::atomic<bool> running {false};
     std::function<void ()> task;
     std::thread *thread {nullptr};

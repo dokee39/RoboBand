@@ -59,11 +59,11 @@
    "-Wall",
    "-g",
    "-gdwarf-2",
-   "src/ctrl/chassis/balance.cc",
+   "src/ctrl/chassis/lqr_sim.cc",
    "-o",
-   "build/src/ctrl/chassis/balance.cc.o"
+   "build/src/ctrl/chassis/lqr_sim.cc.o"
   ],
-  "file": "src/ctrl/chassis/balance.cc"
+  "file": "src/ctrl/chassis/lqr_sim.cc"
  },
  {
   "directory": "/home/dokee/Documents/robomaster/projects/RoboBand",
