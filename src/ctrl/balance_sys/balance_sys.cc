@@ -1,16 +1,17 @@
-#include "ctrl/chassis/inc/lqr_sim.hpp"
+#include "ctrl/balance_sys/balance_sys.hpp"
 
 namespace robo {
 namespace ctrl {
-LqrSim::LqrSim():
-    runner("LQR simulation", [this]() { ctrlLoop(); }, cycle_ms) {
+BalanceSys::BalanceSys(int cycle_ms):
+    Ctrl("LQR simulation", cycle_ms),
+    cycle_ms(cycle_ms) {
     K << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
 }
 
-void LqrSim::ctrlLoop() {
+void BalanceSys::ctrlLoop() {
     state_set << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
     state_ref << state_ref(0) + (wheel_motor[0].getAngle() + wheel_motor[1].getAngle()) * radius_wheel / 2,
                  (wheel_motor[0].getSpeed() + wheel_motor[1].getSpeed()) / 2,

@@ -1,4 +1,6 @@
-#include "io/webots/inc/webots.hpp"
+#ifdef USE_WEBOTS
+
+#include "io/webots.hpp"
 
 namespace robo {
 namespace io {
@@ -25,4 +27,5 @@ int Webots::step() {
 }
 }
 
+#endif
 

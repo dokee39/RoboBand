@@ -6,7 +6,7 @@
 #include <pthread.h>
 
 #ifdef USE_WEBOTS
-#include "io/webots/inc/webots.hpp"
+#include "io/webots.hpp"
 #endif
 
 namespace robo {

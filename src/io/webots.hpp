@@ -1,4 +1,5 @@
 #pragma once
+#ifdef USE_WEBOTS
 
 #include <atomic>
 #include <barrier>
@@ -48,3 +49,4 @@ private:
 }
 }
 
+#endif

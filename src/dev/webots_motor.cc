@@ -1,4 +1,6 @@
-#include "dev/inc/webots_motor.hpp"
+#ifdef USE_WEBOTS
+
+#include "dev/webots_motor.hpp"
 
 namespace robo {
 namespace dev {
@@ -20,3 +22,6 @@ void WebotsMotor::update(const int time_step) {
 }
 }
 }
+
+#endif
+

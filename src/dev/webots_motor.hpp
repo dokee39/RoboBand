@@ -1,10 +1,11 @@
 #pragma once
+#ifdef USE_WEBOTS
 
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
 
-#include "io/webots/inc/webots.hpp"
+#include "io/webots.hpp"
 #include "virtual/motor.hpp"
 
 namespace robo {
@@ -48,4 +49,6 @@ private:
 };
 }
 }
+
+#endif
 

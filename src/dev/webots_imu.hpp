@@ -1,9 +1,10 @@
 #pragma once
+#ifdef USE_WEBOTS
 
 #include <string>
 
 #include "virtual/imu.hpp"
-#include "io/webots/inc/webots.hpp"
+#include "io/webots.hpp"
 
 namespace robo {
 namespace dev {
@@ -30,3 +31,6 @@ private:
 };
 }
 }
+
+#endif
+

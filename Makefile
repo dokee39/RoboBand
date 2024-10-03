@@ -20,20 +20,24 @@ USE_WEBOTS := 1
 CC := g++
 OPT := -std=c++20 -og -g
 DEF := \
+TOML_HEADER_ONLY=0
 
 BUILD_DIR := ./build
 SRC_DIRS := \
+src
+INC_DIRS := \
 src
 LDFLAGS := \
 -lm \
 -ldl \
 -lrt \
--lpthread
+-lpthread \
+-ltomlplusplus
 
 SRCS := $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.cc' -or -name '*.cpp')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
-INC_DIRS := $(shell find $(SRC_DIRS) -type d)
+
 ifeq ($(USE_WEBOTS), 1)
 	DEF += USE_WEBOTS
 	INC_DIRS += $(WEBOTS_HOME)/include/controller/cpp
@@ -71,6 +75,7 @@ $(BUILD_DIR):
 run:
 	@echo -e "$(YELLOW_BLOD)  ->$(END) $(YELLOW)starting...$(END)"
 	@-$(BUILD_DIR)/$(TARGET)
+	@echo -e "$(YELLOW_BLOD)  ->$(END) $(YELLOW)end$(END)"
 
 clean:
 	@echo -e "$(YELLOW_BLOD)  ->$(END) $(RED)cleaning...$(END)"

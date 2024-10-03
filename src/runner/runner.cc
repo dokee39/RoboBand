@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "runner/inc/runner.hpp"
+#include "runner/runner.hpp"
 
 namespace robo {
 namespace run {

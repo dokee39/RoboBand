@@ -1,4 +1,6 @@
-#include "dev/inc/webots_imu.hpp"
+#ifdef USE_WEBOTS
+
+#include "dev/webots_imu.hpp"
 
 namespace robo {
 namespace dev {
@@ -16,3 +18,5 @@ void WebotsImu::update() {
 }
 }
 }
+
+#endif

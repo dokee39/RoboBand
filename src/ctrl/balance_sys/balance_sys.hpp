@@ -2,24 +2,23 @@
 
 #include <eigen3/Eigen/Eigen>
 
+#include "ctrl/ctrl.hpp"
 #include "virtual/motor.hpp"
 #include "virtual/imu.hpp"
-#include "runner/inc/runner.hpp"
 
 namespace robo {
 namespace ctrl {
-class LqrSim {
+class BalanceSys: public Ctrl{
 public:
-    explicit LqrSim();
-    ~LqrSim() = default;
+    explicit BalanceSys(int cycle_ms);
+    ~BalanceSys() override = default;
 
-    int cycle_ms {1};
-    robo::run::Runner runner;
+    int cycle_ms;
     robo::vir::Imu imu;
     robo::vir::Motor wheel_motor[2];
     robo::vir::Motor joint_motor[2];
 
-    void ctrlLoop();
+    void ctrlLoop() override;
 
 private:
     Eigen::Vector<float, 10> state_ref;
