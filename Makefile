@@ -18,7 +18,7 @@ DEBUG := 1
 USE_WEBOTS := 1
 
 CC := g++
-OPT := -std=c++20 -og -g
+OPT := -std=c++20 -og
 DEF := \
 TOML_HEADER_ONLY=0
 
@@ -39,7 +39,6 @@ LDFLAGS := \
 SRCS += $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.cc' -or -name '*.cpp')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
-
 ifeq ($(USE_WEBOTS), 1)
 	DEF += USE_WEBOTS
 	INC_DIRS += $(WEBOTS_HOME)/include/controller/cpp

@@ -9,7 +9,9 @@ Webots::Webots():
     basic_time_step((int)robot.getBasicTimeStep()){
 }
 Webots::~Webots() {
-    delete sync_point;
+    if (sync_point != nullptr) {
+        delete sync_point;
+    }
 }
 
 int Webots::step() {
@@ -17,9 +19,7 @@ int Webots::step() {
         sync_point = new std::barrier<>(bind_tasks_num + 1);
     }
     time_step = robot.step(basic_time_step);
-    if (time_step == -1) {
-        delete sync_point;
-    } else {
+    if (time_step != -1) {
         sync_point->arrive_and_wait();
     }
     return time_step;
