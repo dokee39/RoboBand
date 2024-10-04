@@ -17,14 +17,14 @@ void mergeConfig(toml::table& user_config, toml::table& default_config) {
     }
 }
 
-const toml::table &getTable(const toml::table &table, const std::string key) {
+const toml::table &getTable(const toml::table &table, const std::string &key) {
     auto new_table = table[key].as_table();
-    if (new_table) {
-        /*LOG(INFO) << "true key:" + key;*/
+    if (!!new_table) {
+        LOG(INFO) << "True key: " + key;
         return *new_table;
     } else {
-        /*LOG(INFO) << "error key:" + key;*/
-        throw std::runtime_error(R"(An error occurred when took out a subtable named ")" + key + R"(".)");
+        LOG(ERROR) << R"(An error occurred when took out a subtable named ")" + key + R"(".)";
+        throw std::runtime_error("Wrong configuration file.");
         return table;
     }
 }

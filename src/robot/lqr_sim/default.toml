@@ -1,6 +1,20 @@
 robot = "lqr_sim"
 
+inertial = "inertial"
+gyro = "gyro"
+wheel_motor_1 = "wheel_motor_1"
+wheel_motor_2 = "wheel_motor_2"
+joint_motor_1 = "joint_motor_1"
+joint_motor_2 = "joint_motor_2"
+
 [ctrl.balance_sys]
 cycle_ms = 1
 radius_wheel = 0.15
+K = [    0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+         0,    0,    0,    0,    0,    0,    0,    0,    0,    0,
+         0,    0,    0,    0,    0,    0,    0,    0,    0,    0]
+
+
+
 

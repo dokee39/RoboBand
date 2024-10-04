@@ -7,12 +7,18 @@
 
 namespace robo {
 void Robot::run(std::atomic<bool>& running) {
+#ifdef USE_WEBOTS
+    for (auto ctrl: ctrls) {
+        ctrl->runner.bind(webots_io);
+    }
+#endif
+
     for (auto ctrl: ctrls) {
         ctrl->runner.run();
     }
 
 #ifdef USE_WEBOTS
-    while (running && webots_io->step() != -1);
+    while (running && webots_io.step() != -1);
 #else
     while (running);
 #endif
@@ -22,7 +28,7 @@ void Robot::run(std::atomic<bool>& running) {
     }
 }
 
-Robot *robotCreate(std::string user_config_path) {
+Robot *robotCreate(const std::string &user_config_path) {
     toml::table config;
     toml::table user_config;
     Robot *robot = nullptr;

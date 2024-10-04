@@ -3,25 +3,24 @@
 
 #include "robot/robot.hpp"
 #include "ctrl/balance_sys/balance_sys.hpp"
-#include "util/util.hpp"
+#include "dev/webots_imu.hpp"
+#include "dev/webots_motor.hpp"
 
 namespace robo {
 class LqrSim: public Robot {
 public:
-    explicit LqrSim(const toml::table &config):
-        balance_sys(util::getTable(util::getTable(config, "ctrl"), "balance_sys")) {
-        webots_io = new robo::io::Webots;
-    }
-    ~LqrSim() override {
-        delete webots_io;
-    }
+    explicit LqrSim(const toml::table &config);
+    ~LqrSim() override = default;
 
 private:
     ctrl::BalanceSys balance_sys;
+
+    robo::dev::WebotsImu imu;
+    robo::dev::WebotsMotor wheel_motor[2];
+    robo::dev::WebotsMotor joint_motor[2];
     
-    void bindVirtualDev() override {}
-    void devInit() override {}
-    void bindDevIo() override {}
+    void bindVirtualDev() override;
+    void devInit() override;
 };
 }
 

@@ -12,7 +12,7 @@ namespace robo {
 namespace dev {
 class WebotsMotor {
 public:
-    explicit WebotsMotor(robo::io::Webots &webots_io, const std::string& motor_name);
+    explicit WebotsMotor(robo::io::Webots &webots_io, const std::string &motor_name);
     ~WebotsMotor() = default;
 
     robo::vir::MotorBinder binder {

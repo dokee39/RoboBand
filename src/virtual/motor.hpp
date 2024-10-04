@@ -5,6 +5,8 @@
 #include <iostream>
 #include <iomanip>
 
+#include <easylogging++.h>
+
 namespace robo {
 namespace vir {
 struct MotorBinder {
@@ -34,7 +36,7 @@ public:
             delete angle;
             delete speed;
         } else {
-            std::clog << "[WARNING] [Motor<" + name + ">] Binding repeatedly!" << std::endl;
+            LOG(WARNING) << "[Motor<" + name + ">] Binding repeatedly!";
         }
         setTorque = binder.setTorque;
         angle = binder.angle;
@@ -49,13 +51,13 @@ public:
     }
 
 private:
-    const std::string name {"M"};
+    const std::string name {"virtual"};
     bool is_bound {false};
     float *angle {new float {0.0f}};
     float *speed {new float {0.0f}};
 
     void setTorqueDefault(float torque) {
-        std::cout << std::setprecision(3) << "[INFO] [Motor<" + name + ">] set torque: " << torque << "Nm." << std::endl;
+        LOG(INFO) << std::setprecision(3) << "[Motor<" + name + ">] set torque: " << torque << "Nm.";
     }
 };
 }

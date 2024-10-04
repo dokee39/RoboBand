@@ -1,7 +1,7 @@
 #pragma once
 
-#include <iostream>
 #include <string>
+#include <easylogging++.h>
 
 namespace robo {
 namespace vir {
@@ -35,7 +35,7 @@ public:
             delete[] angle;
             delete[] speed;
         } else {
-            std::clog << "[WARNING] [Imu<" + name + ">] Binding repeatedly!" << std::endl;
+            LOG(WARNING) << "[Imu<" + name + ">] Binding repeatedly!";
         }
         angle = binder.angle;
         speed = binder.speed;
