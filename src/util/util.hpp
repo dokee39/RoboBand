@@ -19,7 +19,7 @@ template <typename T>
 T getValue(const toml::table &table, const std::string &key) {
     auto value = table[key].value<T>();
     if (!!value) {
-        LOG(INFO) << "true key: " + key;
+        LOG(INFO) << "True key: " + key;
         return value.value();
     } else {
         LOG(ERROR) << R"(An error occurred when got a value named ")" + key + R"(".)";
@@ -74,6 +74,7 @@ std::array<T, n> getArray(const toml::table &table, const std::string &key) {
         i++;
     }
 
+    LOG(INFO) << "True key: " + key;
     return arr;
 }
 }

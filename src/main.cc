@@ -1,10 +1,8 @@
 #include <easylogging++.h>
 #include <fstream>
 #include <csignal>
-#include <chrono>
 
 #include "robot/robot.hpp"
-#include "util/util.hpp"
 
 INITIALIZE_EASYLOGGINGPP
 
@@ -26,7 +24,7 @@ int main(int argc, char **argv) {
     el::Loggers::addFlag(el::LoggingFlag::ColoredTerminalOutput);
     std::remove("myeasylog.log");
 
-    LOG(DEBUG) << "Program start.";
+    LOG(DEBUG) << "Program start. ------------------------------------------";
 
     if (argc > 2) {
         LOG(ERROR) << "You passed the wrong command line arguments!";
