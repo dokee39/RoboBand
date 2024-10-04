@@ -2,9 +2,9 @@
 
 namespace robo {
 namespace ctrl {
-BalanceSys::BalanceSys(int cycle_ms):
-    Ctrl("LQR simulation", cycle_ms),
-    cycle_ms(cycle_ms) {
+BalanceSys::BalanceSys(const toml::table &config):
+    Ctrl("LQR simulation", config["cycle_ms"].value_or<int>(1)),
+    cycle_ms(config["cycle_ms"].value_or<int>(1)) {
     K << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

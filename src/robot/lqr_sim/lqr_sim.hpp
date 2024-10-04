@@ -2,15 +2,19 @@
 #pragma once
 
 #include "robot/robot.hpp"
+#include "ctrl/balance_sys/balance_sys.hpp"
 
 namespace robo {
 class LqrSim: public Robot {
 public:
-    explicit LqrSim(std::string user_config_path) {}
+    explicit LqrSim(const toml::table &config):
+        balance_sys(*config["ctrl"]["balance_sys"].as_table()) {
+    }
     ~LqrSim() override = default;
 
 private:
-    void parse_config() override {}
+    ctrl::BalanceSys balance_sys;
+    
     void bindVirtualDev() override {}
     void devInit() override {}
     void bindDevIo() override {}

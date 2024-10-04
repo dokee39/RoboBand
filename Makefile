@@ -23,6 +23,8 @@ DEF := \
 TOML_HEADER_ONLY=0
 
 BUILD_DIR := ./build
+SRCS := \
+/usr/include/easylogging++.cc
 SRC_DIRS := \
 src
 INC_DIRS := \
@@ -34,7 +36,7 @@ LDFLAGS := \
 -lpthread \
 -ltomlplusplus
 
-SRCS := $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.cc' -or -name '*.cpp')
+SRCS += $(shell find $(SRC_DIRS) -name '*.c' -or -name '*.cc' -or -name '*.cpp')
 OBJS := $(SRCS:%=$(BUILD_DIR)/%.o)
 DEPS := $(OBJS:.o=.d)
 
@@ -43,7 +45,7 @@ ifeq ($(USE_WEBOTS), 1)
 	INC_DIRS += $(WEBOTS_HOME)/include/controller/cpp
 	LDFLAGS += -L$(WEBOTS_HOME)/lib/controller -lCppController
 endif
-CPPFLAGS := $(addprefix -D, $(DEF)) $(addprefix -I, $(INC_DIRS)) $(OPT) -Wall
+CPPFLAGS := $(addprefix -D, $(DEF)) $(addprefix -I, $(INC_DIRS)) $(OPT) -Wall -Wno-range-loop-construct
 ifeq ($(DEBUG), 1)
 	CPPFLAGS += -g -gdwarf-2
 endif

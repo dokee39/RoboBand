@@ -3,6 +3,7 @@
 #include <string>
 #include <atomic>
 #include <vector>
+#include <toml++/toml.hpp>
 
 #include "ctrl/ctrl.hpp"
 #ifdef USE_WEBOTS
@@ -23,7 +24,6 @@ protected:
     robo::io::Webots webots_io;
 #endif
 
-    virtual void parse_config() = 0;
     virtual void bindVirtualDev() = 0;
     virtual void devInit() = 0;
     virtual void bindDevIo() = 0;

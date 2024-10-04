@@ -79,4 +79,7 @@ modules.order
 Module.symvers
 Mkfile.old
 user.toml
+log/*
+!log/log.conf
+myeasylog.log
 

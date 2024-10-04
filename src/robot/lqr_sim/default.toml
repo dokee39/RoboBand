@@ -1,0 +1,6 @@
+robot = "lqr_sim"
+
+[ctrl.balance_sys]
+cycle_ms = 1
+radius_wheel = 0.15
+

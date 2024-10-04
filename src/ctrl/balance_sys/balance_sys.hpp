@@ -1,5 +1,6 @@
 #pragma once
 
+#include <toml++/toml.hpp>
 #include <eigen3/Eigen/Eigen>
 
 #include "ctrl/ctrl.hpp"
@@ -10,7 +11,7 @@ namespace robo {
 namespace ctrl {
 class BalanceSys: public Ctrl{
 public:
-    explicit BalanceSys(int cycle_ms);
+    explicit BalanceSys(const toml::table &config);
     ~BalanceSys() override = default;
 
     int cycle_ms;
@@ -25,7 +26,7 @@ private:
     Eigen::Vector<float, 10> state_set;
     Eigen::Vector<float, 4> ctrl_vec;
     Eigen::Matrix<float, 4, 10> K;
-    float radius_wheel {0.15f};
+    float radius_wheel;
 };
 }
 }
