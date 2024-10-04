@@ -3,14 +3,18 @@
 
 #include "robot/robot.hpp"
 #include "ctrl/balance_sys/balance_sys.hpp"
+#include "util/util.hpp"
 
 namespace robo {
 class LqrSim: public Robot {
 public:
     explicit LqrSim(const toml::table &config):
-        balance_sys(*config["ctrl"]["balance_sys"].as_table()) {
+        balance_sys(util::getTable(util::getTable(config, "ctrl"), "balance_sys")) {
+        webots_io = new robo::io::Webots;
     }
-    ~LqrSim() override = default;
+    ~LqrSim() override {
+        delete webots_io;
+    }
 
 private:
     ctrl::BalanceSys balance_sys;

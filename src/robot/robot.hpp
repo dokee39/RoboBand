@@ -21,7 +21,7 @@ public:
 protected:
     std::vector<robo::ctrl::Ctrl *> ctrls;
 #ifdef USE_WEBOTS
-    robo::io::Webots webots_io;
+    robo::io::Webots *webots_io;
 #endif
 
     virtual void bindVirtualDev() = 0;

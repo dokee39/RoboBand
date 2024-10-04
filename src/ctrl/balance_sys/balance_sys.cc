@@ -1,10 +1,12 @@
 #include "ctrl/balance_sys/balance_sys.hpp"
+#include "util/util.hpp"
 
 namespace robo {
 namespace ctrl {
 BalanceSys::BalanceSys(const toml::table &config):
-    Ctrl("LQR simulation", config["cycle_ms"].value_or<int>(1)),
-    cycle_ms(config["cycle_ms"].value_or<int>(1)) {
+    Ctrl("LQR simulation", util::getValue<int>(config, "cycle_ms")),
+    cycle_ms(util::getValue<int>(config, "cycle_ms")),
+    radius_wheel(util::getValue<float>(config, "radius_wheel")) {
     K << 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
          0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

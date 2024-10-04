@@ -1,5 +1,5 @@
-#include <iostream>
 #include <string_view>
+#include <stdexcept>
 
 #include "robot/robot.hpp"
 #include "robot/lqr_sim/lqr_sim.hpp"
@@ -12,7 +12,7 @@ void Robot::run(std::atomic<bool>& running) {
     }
 
 #ifdef USE_WEBOTS
-    while (running && webots_io.step() != -1);
+    while (running && webots_io->step() != -1);
 #else
     while (running);
 #endif
@@ -25,6 +25,7 @@ void Robot::run(std::atomic<bool>& running) {
 Robot *robotCreate(std::string user_config_path) {
     toml::table config;
     toml::table user_config;
+    Robot *robot = nullptr;
 
     try {
         user_config = toml::parse_file(user_config_path);
@@ -40,22 +41,26 @@ Robot *robotCreate(std::string user_config_path) {
     }
 
     auto robot_name = user_config["robot"].value_or(std::string_view("err"));
-    
-    if (robot_name == "default") {
-        return nullptr;
+
+    try {
+        if (robot_name == "default") {
 #ifdef USE_WEBOTS
-    } else if (robot_name == "lqr_sim") {
-        config = toml::parse_file("./src/robot/lqr_sim/default.toml");
-        util::merge_config(user_config, config);
-        return new LqrSim(config);
+        } else if (robot_name == "lqr_sim") {
+            config = toml::parse_file("./src/robot/lqr_sim/default.toml");
+            util::mergeConfig(user_config, config);
+            robot = new LqrSim(config);
 #endif
-    } else if (robot_name == "err") {
-        LOG(ERROR) << R"(The value paired with the key "robot" in your config ")" + user_config_path + R"(" is not a string!)";
-        return nullptr;
-    } else {
-        LOG(ERROR) << R"(The "robot" you specified in the config ")" + user_config_path + R"(" has no corresponding implementation!)";
+        } else if (robot_name == "err") {
+            LOG(ERROR) << R"(The value paired with the key "robot" in your config ")" + user_config_path + R"(" is not a string!)";
+        } else {
+            LOG(ERROR) << R"(The "robot" you specified in the config ")" + user_config_path + R"(" has no corresponding implementation!)";
+        }
+    } catch (const std::runtime_error &err) {
+        LOG(ERROR) << "Robot initialization failed: " << err.what();
         return nullptr;
     }
+
+    return robot;
 }
 }
 
