@@ -18,6 +18,9 @@ public:
     }
     virtual ~Io() {
         delete[] data;
+        if (thread && thread->joinable()) {
+            thread->join();
+        }
     }
 
     std::vector<std::function<bool (uint8_t *)>> unpackers;
@@ -35,7 +38,6 @@ public:
         running = false;
         if (thread != nullptr) {
             thread->join();
-            delete thread;
             LOG(INFO) << "[IO<" + name + ">] Stopped!";
         }
     }

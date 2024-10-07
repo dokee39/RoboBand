@@ -15,10 +15,13 @@ class Runner {
 public:
     explicit Runner(const std::string &name, std::function<void ()> task, int cycle_ms):
         name(name),
+        cycle_ms(cycle_ms),
         task(task) {
     }
     ~Runner() {
-        delete thread;
+        if (thread && thread->joinable()) {
+            thread->join();
+        }
     }
 
     void run();

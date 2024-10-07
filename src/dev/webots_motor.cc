@@ -4,10 +4,11 @@
 
 namespace robo {
 namespace dev {
-WebotsMotor::WebotsMotor(robo::io::Webots &webots_io, const std::string& motor_name):
+WebotsMotor::WebotsMotor(robo::io::Webots &webots_io, const std::string& motor_name, const int dir):
     Dev(webots_io),
     motor(*webots_io.robot.getMotor(motor_name)),
-    encoder(*motor.getPositionSensor()) {
+    encoder(*motor.getPositionSensor()),
+    dir(dir) {
     encoder.enable(webots_io.robot.getBasicTimeStep());
 }
 
@@ -18,7 +19,7 @@ void WebotsMotor::update() {
     if (time == time_last) {
         return;
     }
-    angle = angle_tmp - angle_offset;
+    angle = dir * angle_tmp - angle_offset;
     speed = (angle - angle_last) / (time - time_last);
     time_last = time;
     angle_last = angle;

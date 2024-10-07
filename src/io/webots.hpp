@@ -19,31 +19,16 @@ public:
     ~Webots();
 
     webots::Robot robot;
-    std::atomic<int> time_step;
+    std::atomic<int> time;
     std::atomic<int> bind_runner_num {0};
     std::barrier<> *sync_point;
     std::vector<std::function<void ()>> updaters;
 
     int step();
-    void motorSetTorque(webots::Motor &motor, const float torque) {
-        motor.setTorque(torque);
-    }
-    void encoderGetValue(webots::PositionSensor &encoder, float &value, int &time) {
-        value = encoder.getValue();
-        time = robot.step(0);
-    };
-    void inertialGetRollPitchYaw(webots::InertialUnit &inertial, float *angle) {
-        const double *angle_tmp = inertial.getRollPitchYaw();
-        for (int i = 0; i < 3; i++) {
-            angle[i] = angle_tmp[i];
-        }
-    }
-    void gyroGetValues(webots::Gyro &gyro, float *speed) {
-        const double *speed_tmp = gyro.getValues();
-        for (int i = 0; i < 3; i++) {
-            speed[i] = speed_tmp[i];
-        }
-    }
+    void motorSetTorque(webots::Motor &motor, const float torque);
+    void encoderGetValue(webots::PositionSensor &encoder, float &value, int &time);
+    void inertialGetRollPitchYaw(webots::InertialUnit &inertial, float *angle);
+    void gyroGetValues(webots::Gyro &gyro, float *speed);
 
 private:
     int basic_time_step;

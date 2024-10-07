@@ -24,7 +24,6 @@ void Runner::stop() {
     running = false;
     if (thread != nullptr) {
         thread->join();
-        delete thread;
         LOG(INFO) << "[Runner<" + name + ">] Stopped!";
     }
 }
@@ -35,14 +34,14 @@ void Runner::bind(robo::io::Webots &webots_io_) {
 }
 
 void Runner::thread_func() {
-    int time_step_set = webots_io->time_step;
+    int time_set = webots_io->time;
     while (running) {
-        time_step_set += cycle_ms;
+        time_set += cycle_ms;
         if (webots_io != nullptr) {
             if (webots_io->sync_point != nullptr) {
                 webots_io->sync_point->arrive_and_wait();
             }
-            if (time_step_set >= webots_io->time_step) {
+            if (time_set >= webots_io->time) {
                 task();
             }
         }
@@ -67,7 +66,6 @@ void Runner::stop() {
     running = false;
     if (thread != nullptr) {
         thread->join();
-        delete thread;
         LOG(INFO) << "[Runner<" + name + ">] Stopped!";
     }
 }

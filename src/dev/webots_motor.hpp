@@ -12,7 +12,7 @@ namespace robo {
 namespace dev {
 class WebotsMotor: public Dev<robo::io::Webots> {
 public:
-    explicit WebotsMotor(robo::io::Webots &webots_io, const std::string &motor_name);
+    explicit WebotsMotor(robo::io::Webots &webots_io, const std::string &motor_name, const int dir);
     ~WebotsMotor() = default;
 
     robo::vir::MotorBinder binder {
@@ -22,22 +22,17 @@ public:
     };
 
     void setTorque(float torque) {
-        webots_io.motorSetTorque(motor, torque);
+        webots_io.motorSetTorque(motor, dir * torque);
     }
     void setAngelOffset(float angle_offset_) {
-        angle_offset = angle_offset_;
-    }
-    float getAngle() const {
-        return angle;
-    }
-    float getSpeed() const {
-        return speed;
+        angle_offset = dir * angle_offset_;
     }
 
 private:
     webots::Motor &motor;
     webots::PositionSensor &encoder;
 
+    const int dir;
     float speed {0.0f};
     float angle {0.0f};
     float angle_last {0.0f};
