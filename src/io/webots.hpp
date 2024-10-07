@@ -3,6 +3,8 @@
 
 #include <atomic>
 #include <barrier>
+#include <vector>
+#include <functional>
 #include <webots/Robot.hpp>
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
@@ -18,8 +20,9 @@ public:
 
     webots::Robot robot;
     std::atomic<int> time_step;
-    std::atomic<int> bind_tasks_num {0};
+    std::atomic<int> bind_runner_num {0};
     std::barrier<> *sync_point;
+    std::vector<std::function<void ()>> updaters;
 
     int step();
     void motorSetTorque(webots::Motor &motor, const float torque) {

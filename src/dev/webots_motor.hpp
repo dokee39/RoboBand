@@ -5,12 +5,12 @@
 #include <webots/Motor.hpp>
 #include <webots/PositionSensor.hpp>
 
-#include "io/webots.hpp"
 #include "virtual/motor.hpp"
+#include "dev/dev.hpp"
 
 namespace robo {
 namespace dev {
-class WebotsMotor {
+class WebotsMotor: public Dev<robo::io::Webots> {
 public:
     explicit WebotsMotor(robo::io::Webots &webots_io, const std::string &motor_name);
     ~WebotsMotor() = default;
@@ -21,7 +21,6 @@ public:
         .speed = &this->speed,
     };
 
-    void update(const int time_step);
     void setTorque(float torque) {
         webots_io.motorSetTorque(motor, torque);
     }
@@ -36,7 +35,6 @@ public:
     }
 
 private:
-    robo::io::Webots &webots_io;
     webots::Motor &motor;
     webots::PositionSensor &encoder;
 
@@ -45,6 +43,8 @@ private:
     float angle_last {0.0f};
     float angle_offset {0.0f};
     int time_last {0};
+
+    virtual void update() override;
 
 };
 }

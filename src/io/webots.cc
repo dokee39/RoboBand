@@ -16,9 +16,12 @@ Webots::~Webots() {
 
 int Webots::step() {
     if (sync_point == nullptr) {
-        sync_point = new std::barrier<>(bind_tasks_num + 1);
+        sync_point = new std::barrier<>(bind_runner_num + 1);
     }
     time_step = robot.step(basic_time_step);
+    for (auto update: updaters) {
+        update();
+    }
     if (time_step != -1) {
         sync_point->arrive_and_wait();
     }

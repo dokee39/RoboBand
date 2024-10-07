@@ -119,6 +119,27 @@
    "-Wno-range-loop-construct",
    "-g",
    "-gdwarf-2",
+   "src/ctrl/runner.cc",
+   "-o",
+   "build/src/ctrl/runner.cc.o"
+  ],
+  "file": "src/ctrl/runner.cc"
+ },
+ {
+  "directory": "/home/dokee/Documents/robomaster/projects/RoboBand",
+  "arguments": [
+   "g++",
+   "-c",
+   "-DTOML_HEADER_ONLY=0",
+   "-DUSE_WEBOTS",
+   "-Isrc",
+   "-I/usr/local/webots/include/controller/cpp",
+   "-std=c++20",
+   "-og",
+   "-Wall",
+   "-Wno-range-loop-construct",
+   "-g",
+   "-gdwarf-2",
    "src/io/webots.cc",
    "-o",
    "build/src/io/webots.cc.o"
@@ -166,27 +187,6 @@
    "build/src/dev/webots_imu.cc.o"
   ],
   "file": "src/dev/webots_imu.cc"
- },
- {
-  "directory": "/home/dokee/Documents/robomaster/projects/RoboBand",
-  "arguments": [
-   "g++",
-   "-c",
-   "-DTOML_HEADER_ONLY=0",
-   "-DUSE_WEBOTS",
-   "-Isrc",
-   "-I/usr/local/webots/include/controller/cpp",
-   "-std=c++20",
-   "-og",
-   "-Wall",
-   "-Wno-range-loop-construct",
-   "-g",
-   "-gdwarf-2",
-   "src/runner/runner.cc",
-   "-o",
-   "build/src/runner/runner.cc.o"
-  ],
-  "file": "src/runner/runner.cc"
  },
  {
   "directory": "/home/dokee/Documents/robomaster/projects/RoboBand",

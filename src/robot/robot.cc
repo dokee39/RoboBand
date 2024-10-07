@@ -12,7 +12,9 @@ void Robot::run(std::atomic<bool>& running) {
         ctrl->runner.bind(webots_io);
     }
 #endif
-
+    for (auto io: ios) {
+        io->run();
+    }
     for (auto ctrl: ctrls) {
         ctrl->runner.run();
     }
@@ -23,6 +25,9 @@ void Robot::run(std::atomic<bool>& running) {
     while (running);
 #endif
 
+    for (auto io: ios) {
+        io->stop();
+    }
     for (auto ctrl: ctrls) {
         ctrl->runner.stop();
     }
@@ -49,12 +54,13 @@ Robot *robotCreate(const std::string &user_config_path) {
     auto robot_name = user_config["robot"].value_or(std::string_view("err"));
 
     try {
-        if (robot_name == "default") {
 #ifdef USE_WEBOTS
-        } else if (robot_name == "lqr_sim") {
+        if (robot_name == "lqr_sim") {
             config = toml::parse_file("./src/robot/lqr_sim/default.toml");
             util::mergeConfig(user_config, config);
             robot = new LqrSim(config);
+#else
+       if (robot_name == "default") {
 #endif
         } else if (robot_name == "err") {
             LOG(ERROR) << R"(The value paired with the key "robot" in your config ")" + user_config_path + R"(" is not a string!)";

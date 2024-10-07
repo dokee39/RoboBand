@@ -4,8 +4,8 @@
 using namespace robo::util;
 namespace robo {
 namespace ctrl {
-BalanceSys::BalanceSys(const toml::table &config):
-    Ctrl("LQR simulation", getValue<int>(config, "cycle_ms")),
+BalanceSys::BalanceSys(const toml::table &config, const std::string &name):
+    Ctrl(name, getValue<int>(config, "cycle_ms")),
     cycle_ms(getValue<int>(config, "cycle_ms")),
     K(Eigen::Map<Eigen::Matrix<float, 4, 10>>(getArray<float, 4 * 10>(config, "K").data())),
     radius_wheel(getValue<float>(config, "radius_wheel")) {

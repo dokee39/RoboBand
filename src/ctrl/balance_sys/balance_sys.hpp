@@ -11,7 +11,7 @@ namespace robo {
 namespace ctrl {
 class BalanceSys: public Ctrl{
 public:
-    explicit BalanceSys(const toml::table &config);
+    explicit BalanceSys(const toml::table &config, const std::string &name);
     ~BalanceSys() override = default;
 
     int cycle_ms;

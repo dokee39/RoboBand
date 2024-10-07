@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "runner/runner.hpp"
+#include "ctrl/runner.hpp"
 
 namespace robo {
 namespace ctrl {

@@ -6,6 +6,7 @@
 #include <toml++/toml.hpp>
 
 #include "ctrl/ctrl.hpp"
+#include "io/io.hpp"
 #ifdef USE_WEBOTS
 #include "io/webots.hpp"
 #endif
@@ -23,6 +24,7 @@ protected:
 #ifdef USE_WEBOTS
     robo::io::Webots webots_io;
 #endif
+    std::vector<robo::io::Io *> ios;
 
     virtual void bindVirtualDev() = 0;
     virtual void devInit() = 0;

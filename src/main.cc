@@ -39,7 +39,6 @@ int main(int argc, char **argv) {
         return 1;
     }
 
-
     auto robot = robo::robotCreate(user_config_path);
 
     if (robot == nullptr) {

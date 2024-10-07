@@ -37,6 +37,8 @@ private:
     robo::io::Webots *webots_io;
 #endif
 
+    void thread_func();
+
 };
 }
 }

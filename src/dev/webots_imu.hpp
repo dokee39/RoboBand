@@ -4,11 +4,11 @@
 #include <string>
 
 #include "virtual/imu.hpp"
-#include "io/webots.hpp"
+#include "dev/dev.hpp"
 
 namespace robo {
 namespace dev {
-class WebotsImu {
+class WebotsImu: public Dev<robo::io::Webots> {
 public:
     explicit WebotsImu(robo::io::Webots &webots_io, const std::string &inertial_name, const std::string &gyro_name);
     ~WebotsImu() = default;
@@ -18,15 +18,14 @@ public:
         .speed = this->speed
     };
 
-    void update();
-
 private:
-    robo::io::Webots &webots_io;
     webots::InertialUnit &inertial;
     webots::Gyro &gyro;
 
     float angle[3];
     float speed[3];
+
+    virtual void update() override;
 
 };
 }
