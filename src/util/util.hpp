@@ -6,7 +6,6 @@
 #include <type_traits>
 #include <typeinfo>
 #include <cxxabi.h>
-#include <functional>
 #include <toml++/impl/forward_declarations.hpp>
 #include <toml++/toml.hpp>
 #include <easylogging++.h>

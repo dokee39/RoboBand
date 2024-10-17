@@ -14,14 +14,14 @@ template <typename IO, typename Enable = void>
 class Dev;
 
 template <typename IO>
-class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoKey<typename IO::io_key>, IO>::value>::type> {
+class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoKey<typename IO::key_type>, IO>::value>::type> {
 public:
-    explicit Dev(const std::string &name, IO &io, const typename IO::io_key io_key):
+    explicit Dev(const std::string &name, IO &io, const typename IO::key_type io_key):
         io(io),
         io_key(io_key) {
-        auto it = io.unpackers.find();
+        auto it = io.unpackers.find(io_key);
         if (it != io.unpackers.end()) {
-            if constexpr (robo::util::is_streamable<typename IO::io_key>::value) {
+            if constexpr (robo::util::is_streamable<typename IO::key_type>::value) {
                 LOG(ERROR) << "[Dev<" + name + R"(>] You used duplicate key ")" << io_key << R"(" when binging to IO ")" << io.name << R"("!)";
             } else {
                 LOG(ERROR) << "[Dev<" + name + R"(>] You used duplicate key when binging to IO ")" << io.name << R"("!)";
@@ -36,7 +36,7 @@ public:
 
 protected:
     IO &io;
-    const typename IO::io_key io_key;
+    const typename IO::key_type io_key;
 
 private:
     virtual bool unpack(const char *data, const int len) = 0;

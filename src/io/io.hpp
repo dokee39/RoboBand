@@ -64,7 +64,7 @@ public:
     }
     ~IoKey() override = default;
 
-    using io_key = Tkey;
+    using key_type = Tkey;
 
     std::map<Tkey, std::function<void (const char *, const int len)>> unpackers;
 
