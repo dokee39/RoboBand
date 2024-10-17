@@ -161,6 +161,27 @@
    "-Wno-range-loop-construct",
    "-g",
    "-gdwarf-2",
+   "src/io/socket.cc",
+   "-o",
+   "build/src/io/socket.cc.o"
+  ],
+  "file": "src/io/socket.cc"
+ },
+ {
+  "directory": "/home/dokee/Documents/robomaster/projects/RoboBand",
+  "arguments": [
+   "g++",
+   "-c",
+   "-DTOML_HEADER_ONLY=0",
+   "-DUSE_WEBOTS",
+   "-Isrc",
+   "-I/usr/local/webots/include/controller/cpp",
+   "-std=c++20",
+   "-og",
+   "-Wall",
+   "-Wno-range-loop-construct",
+   "-g",
+   "-gdwarf-2",
    "src/dev/webots_motor.cc",
    "-o",
    "build/src/dev/webots_motor.cc.o"

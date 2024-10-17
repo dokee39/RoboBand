@@ -26,14 +26,14 @@ void BalanceSys::ctrlLoop() {
     // TODO rad_format phi
     ctrl_vec = K * (state_set - state_ref); 
 
-    /*wheel_motor[0].setTorque(ctrl_vec(0));*/
-    /*wheel_motor[1].setTorque(ctrl_vec(1));*/
-    /*joint_motor[0].setTorque(ctrl_vec(2));*/
-    /*joint_motor[1].setTorque(ctrl_vec(3));*/
-    wheel_motor[0].setTorque(1);
-    wheel_motor[1].setTorque(1);
-    joint_motor[0].setTorque(5);
-    joint_motor[1].setTorque(5);
+    wheel_motor[0].setTorque(ctrl_vec(0));
+    wheel_motor[1].setTorque(ctrl_vec(1));
+    joint_motor[0].setTorque(ctrl_vec(2));
+    joint_motor[1].setTorque(ctrl_vec(3));
+    /*wheel_motor[0].setTorque(1);*/
+    /*wheel_motor[1].setTorque(1);*/
+    /*joint_motor[0].setTorque(5);*/
+    /*joint_motor[1].setTorque(5);*/
 }
 }
 }

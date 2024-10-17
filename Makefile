@@ -60,7 +60,7 @@ $(BUILD_DIR)/$(TARGET): $(OBJS) | $(BUILD_DIR)
 $(BUILD_DIR)/%.c.o: %.c Makefile | $(BUILD_DIR)
 	@echo -e "$(YELLOW_BLOD)  ->$(END) $(GREEN)CC$(END) $<"
 	@mkdir -p $(dir $@) 
-	@$(CC) -o $@ -c $< $(CPPFLAGS)
+	@$(CC) -c $(CPPFLAGS) $< -o $@
 $(BUILD_DIR)/%.cc.o: %.cc Makefile | $(BUILD_DIR)
 	@echo -e "$(YELLOW_BLOD)  ->$(END) $(GREEN)CC$(END) $<"
 	@mkdir -p $(dir $@) 
@@ -68,7 +68,7 @@ $(BUILD_DIR)/%.cc.o: %.cc Makefile | $(BUILD_DIR)
 $(BUILD_DIR)/%.cpp.o: %.cpp Makefile | $(BUILD_DIR)
 	@echo -e "$(YELLOW_BLOD)  ->$(END) $(GREEN)CC$(END) $<"
 	@mkdir -p $(dir $@) 
-	@$(CC) -o $@ -c $< $(CPPFLAGS)
+	@$(CC) -c $(CPPFLAGS) $< -o $@
 
 $(BUILD_DIR):
 	@mkdir $@
