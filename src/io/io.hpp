@@ -5,8 +5,10 @@
 #include <vector>
 #include <string>
 #include <thread>
-#include <map>
+#include <unordered_map>
 #include <easylogging++.h>
+
+#include "util/util.hpp"
 
 namespace robo {
 namespace io {
@@ -54,6 +56,7 @@ private:
 
 };
 
+template <typename Tkey>
 class IoKey: public Io {
 public:
     explicit IoKey(const std::string &name, const int buffer_size):
@@ -61,23 +64,28 @@ public:
     }
     ~IoKey() override = default;
 
-    std::map<int, std::function<void (const char *, const int len)>> unpackers;
+    std::unordered_map<Tkey, std::function<void (const char *, const int len)>> unpackers;
 
-    virtual int read(int &key, char *data) = 0;
+    virtual int read(Tkey &key, char *data) = 0;
 
 private:
     std::atomic<bool> running;
 
     void thread_func() override {
         while (running) {
-            int len, key;
+            int len;
+            Tkey key;
             len = read(key, buffer);
             if (len <= 0) {
                 LOG(WARNING) << "[IO<" + name + ">] Read Error!";
             } else {
                 auto it = unpackers.find(key);
                 if (it == unpackers.end()) {
-                    LOG(WARNING) << "[IO<" + name + ">] Unbound key read: " << key << ".";
+                    if constexpr (robo::util::is_streamable<Tkey>::value) {
+                        LOG(WARNING) << "[IO<" + name + ">] Unbound key read: " << key << ".";
+                    } else {
+                        LOG(WARNING) << "[IO<" + name + ">] Unbound key read.";
+                    }
                 } else {
                     it->second(buffer, len);
                 }

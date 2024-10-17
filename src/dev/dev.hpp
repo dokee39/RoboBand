@@ -14,9 +14,9 @@ template <typename IO, typename Enable = void>
 class Dev;
 
 template <typename IO>
-class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoKey, IO>::value>::type> {
+class Dev<IO, typename std::enable_if<std::is_base_of<robo::io::IoKey<typename IO::io_key>, IO>::value>::type> {
 public:
-    explicit Dev(const std::string &name, IO &io, const int io_key):
+    explicit Dev(const std::string &name, IO &io, const typename IO::io_key io_key):
         io(io),
         io_key(io_key) {
         auto it = io.unpackers.find();
@@ -32,7 +32,7 @@ public:
 
 protected:
     IO &io;
-    const int io_key;
+    const typename IO::io_key io_key;
 
 private:
     virtual bool unpack(const char *data, const int len) = 0;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <iostream>
 #include <string>
 #include <array>
 #include <type_traits>
@@ -11,6 +12,7 @@
 
 namespace robo {
 namespace util {
+/**toml**/
 void mergeConfig(toml::table& user_config, toml::table& default_config);
 
 const toml::table &getTable(const toml::table &table, const std::string &key);
@@ -77,5 +79,13 @@ std::array<T, n> getArray(const toml::table &table, const std::string &key) {
     LOG(INFO) << "True key: " + key;
     return arr;
 }
+
+/**iostream**/
+template<typename T, typename = void>
+struct is_streamable : std::false_type {};
+
+template<typename T>
+struct is_streamable<T, std::void_t<decltype(std::declval<std::ostream&>() << std::declval<T>())>> : std::true_type {};
+
 }
 }
