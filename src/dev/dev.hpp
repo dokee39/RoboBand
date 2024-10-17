@@ -21,7 +21,11 @@ public:
         io_key(io_key) {
         auto it = io.unpackers.find();
         if (it != io.unpackers.end()) {
-            LOG(ERROR) << "[Dev<" + name + R"(>] You used duplicate key ")" << io_key << R"(" when binging to IO ")" << io.name << R"("!)";
+            if constexpr (robo::util::is_streamable<typename IO::io_key>::value) {
+                LOG(ERROR) << "[Dev<" + name + R"(>] You used duplicate key ")" << io_key << R"(" when binging to IO ")" << io.name << R"("!)";
+            } else {
+                LOG(ERROR) << "[Dev<" + name + R"(>] You used duplicate key when binging to IO ")" << io.name << R"("!)";
+            }
         } else {
             io.unpackers.emplace(io_key, [this](const char *data, const int len) -> bool { return unpack(data, len); });
         }
