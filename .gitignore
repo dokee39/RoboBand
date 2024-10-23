@@ -83,4 +83,5 @@ log/*
 !log/log.conf
 myeasylog.log
 .gdb*
+ext/
 

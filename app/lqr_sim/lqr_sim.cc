@@ -1,7 +1,7 @@
 #ifdef USE_WEBOTS
 
-#include "robot/lqr_sim/lqr_sim.hpp"
-#include "util/util.hpp"
+#include "lqr_sim/lqr_sim.hpp"
+#include "src/util/util.hpp"
 
 using namespace robo::util;
 namespace robo {

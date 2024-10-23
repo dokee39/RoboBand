@@ -30,10 +30,14 @@ void BalanceSys::ctrlLoop() {
     wheel_motor[1].setTorque(ctrl_vec(1));
     joint_motor[0].setTorque(ctrl_vec(2));
     joint_motor[1].setTorque(ctrl_vec(3));
-    /*wheel_motor[0].setTorque(1);*/
-    /*wheel_motor[1].setTorque(1);*/
-    /*joint_motor[0].setTorque(5);*/
-    /*joint_motor[1].setTorque(5);*/
+
+    // DEBUG
+    /*struct Data {*/
+    /*    int32_t id;*/
+    /*    float t;*/
+    /*    float d[9];*/
+    /*} __attribute__((packed));*/
+    /*Data d = { 1, 0, { state_ref(0), state_ref(2), state_ref(4), state_ref(6), state_ref(8), ctrl_vec(0), ctrl_vec(1), ctrl_vec(2), ctrl_vec(3) } };*/
 }
 }
 }

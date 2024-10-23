@@ -6,7 +6,7 @@
 
 namespace robo {
 namespace io {
-Socket::Socket(const std::string &name, const int port, const int buffer_size):
+Socket::Socket(const std::string &name, const int port, const int buffer_size, const float timeout_ms):
     IoKey(name, buffer_size),
     sockfd(socket(AF_INET, SOCK_DGRAM, 0)) {
     if (sockfd < 0) {
@@ -20,6 +20,13 @@ Socket::Socket(const std::string &name, const int port, const int buffer_size):
 
     if (bind(sockfd, (sockaddr *)&my_addr, sizeof(my_addr)) < 0) {
         LOG(ERROR) << "[IO<" + name + ">] Cannot bind socket fd with port number" << port << ".";
+    }
+
+    if (timeout_ms > 0) {
+        struct timeval tv;
+        tv.tv_sec = (int)(timeout_ms / 1000);
+        tv.tv_usec = (int)(timeout_ms * 1000) % 1000000;
+        setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
     }
 }
 

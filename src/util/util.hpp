@@ -9,6 +9,7 @@
 #include <toml++/impl/forward_declarations.hpp>
 #include <toml++/toml.hpp>
 #include <easylogging++.h>
+#include <netdb.h>
 
 namespace robo {
 namespace util {
@@ -79,6 +80,9 @@ std::array<T, n> getArray(const toml::table &table, const std::string &key) {
     LOG(INFO) << "True key: " + key;
     return arr;
 }
+
+/**io**/
+in_addr_t to_in_addr(const std::string &host);
 
 /**iostream**/
 template<typename T, typename = void>

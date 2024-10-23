@@ -30,7 +30,5 @@ protected:
     virtual void devInit() = 0;
 
 };
-
-Robot *robotCreate(const std::string &user_config_path);
 }
 

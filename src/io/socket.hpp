@@ -10,7 +10,7 @@ namespace robo {
 namespace io {
 class Socket: public IoKey<std::tuple<in_addr_t, int>> {
 public:
-    explicit Socket(const std::string &name, const int port, const int buffer_size);
+    explicit Socket(const std::string &name, const int port, const int buffer_size, const float timeout_ms);
     ~Socket() override;
 
     int read(std::tuple<in_addr_t, int> &key, char *data) override;

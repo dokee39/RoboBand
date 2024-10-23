@@ -1,10 +1,10 @@
 #ifdef USE_WEBOTS
 #pragma once
 
-#include "robot/robot.hpp"
-#include "ctrl/balance_sys/balance_sys.hpp"
-#include "dev/webots_imu.hpp"
-#include "dev/webots_motor.hpp"
+#include "src/robot/robot.hpp"
+#include "src/ctrl/balance_sys/balance_sys.hpp"
+#include "src/dev/webots_imu.hpp"
+#include "src/dev/webots_motor.hpp"
 
 namespace robo {
 class LqrSim: public Robot {
