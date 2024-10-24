@@ -12,5 +12,5 @@ target_link_libraries(
             dl 
             rt 
             pthread
-            easyloggingpp)
+            serial)
 

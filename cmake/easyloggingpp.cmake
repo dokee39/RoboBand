@@ -1,13 +1,18 @@
+set (MOUDLE_DIR ${CMAKE_SOURCE_DIR}/ext/easyloggingpp)
+
 include(FetchContent)
 FetchContent_Declare(
     easyloggingpp
     GIT_REPOSITORY https://github.com/abumq/easyloggingpp.git
     GIT_TAG master
-    SOURCE_DIR ${CMAKE_SOURCE_DIR}/ext/easyloggingpp
+    GIT_SHALLOW TRUE
+    CMAKE_ARGS -Dbuild_static_lib=ON
+    SOURCE_DIR ${MOUDLE_DIR}
+    SOURCE_SUBDIR /tmp
 )
 FetchContent_MakeAvailable(easyloggingpp)
 
-add_library(easyloggingpp ${easyloggingpp_SOURCE_DIR}/src/easylogging++.cc)
+add_library(easyloggingpp ${MOUDLE_DIR}/src/easylogging++.cc)
 target_compile_definitions(
     easyloggingpp 
     PUBLIC ELPP_STL_LOGGING
